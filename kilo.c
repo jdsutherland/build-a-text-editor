@@ -15,6 +15,8 @@ void die(const char *s)
   exit(1);
 }
 
+/*** terminal ***/
+
 void disable_raw_mode()
 {
   if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios) == -1) die("tcsetattr");
@@ -34,6 +36,18 @@ void enable_raw_mode()
 
   if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw) == -1) die("tcsetattr");
 }
+
+/*** output ***/
+
+void editor_refresh_screen()
+{
+  // <esc>[2J - clear entire screen
+  write(STDOUT_FILENO, "\x1b[2J", 4);
+  // <esc>[H - cursor position (defaults to 1,1)
+  write(STDOUT_FILENO, "\x1b[H", 3);
+}
+
+/*** input ***/
 
 char editor_read_key()
 {
@@ -57,11 +71,14 @@ void editor_process_keypress()
   }
 }
 
+/*** init ***/
+
 int main()
 {
   enable_raw_mode();
 
   while (1) {
+    editor_refresh_screen();
     editor_process_keypress();
   }
 
