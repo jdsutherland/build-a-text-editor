@@ -1,4 +1,4 @@
-CFLAGS=-g -O3 -Wall -Wextra $(SET_DEBUG) $(OPTFLAGS)
+CFLAGS=-g -O3 -Wall -Wextra -pedantic -std=c99 $(SET_DEBUG) $(OPTFLAGS)
 SET_DEBUG = -DNDEBUG
 
 src = $(wildcard *.c)
@@ -6,8 +6,8 @@ obj = $(src:.c=.o)
 
 all: kilo
 
-kilo: kilo.c
-	$(CC) kilo.c -o kilo -Wall -Wextra -pedantic -std=c99
+kilo: $(obj)
+	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
 debug: all
 debug: SET_DEBUG = -DDEBUG
